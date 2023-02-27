@@ -1,69 +1,74 @@
 package com.api.semear.Api.Semear.domain.user.service;
 
-import com.api.semear.Api.Semear.core.exception.AuthorizationException;
-import com.api.semear.Api.Semear.domain.enums.Profile;
-import com.api.semear.Api.Semear.domain.security.modal.UserSS;
+
 import com.api.semear.Api.Semear.domain.user.model.User;
-import com.api.semear.Api.Semear.domain.user.model.UserProfileApiResponse;
 import com.api.semear.Api.Semear.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import java.util.Optional;
 
-@Transactional
-@AllArgsConstructor
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
+
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-
-    public UserDetails loadUserByUsername (String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            throw new UsernameNotFoundException(email);
-
-        var userSS = new UserSS(user.getId(), user.getEmail(), user.getPassword(), user.getProfiles());
-        userSS.setTypeUser(userSS.getTypeUser());
-        return userSS;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public UserProfileApiResponse getUserProfile(UserSS userSS){
-        return new UserProfileApiResponse(userSS);
+    public User findById(Long id){
+        Optional<User> user = this.userRepository.findById(id);
+        return user.orElseThrow(() -> new RuntimeException(
+                "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()));
     }
 
-    public static UserSS getAuthenticatedUser() {
-        try {
-            return (UserSS) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-    public static void validateIfUserHasAuthoritation(Integer userId) {
-        var user = getAuthenticatedUser();
-        if (isAnUserValid(userId, user))
-            throw new AuthorizationException("Acesso negado");
+    @Transactional
+    public User create (User user) {
+        user.setId(null);
+        user = this.userRepository.save(user);
+        return user;
+
     }
 
-    public static boolean userHasAuthoritation(Integer userId) {
-        var user = getAuthenticatedUser();
-        return isAnUserValid(userId, user);
+    @Transactional
+    public User uptade (User user){
+        User newUser = findById(user.getId());
+        newUser.setPassword(user.getPassword());
+        return this.userRepository.save(newUser);
     }
 
-    private static boolean isAnUserValid(Integer userId, UserSS user) {
-        return isNull(user) || !user.hasRole(Profile.ADMIN) && !userId.equals(user.getId());
-    }
 
-    public boolean isValidUser(UserSS authenticatedUser, Integer userId, String typeUser) {
-        return nonNull(authenticatedUser) && nonNull(userId) && nonNull(typeUser)
-                && authenticatedUser.getId().equals(userId)
-                && typeUser.equals(authenticatedUser.getTypeUser());
-    }
+
+//    public UserDetails authenticate(User user){
+//        UserDetails userDetails = loadUserByUsername(user.getEmail());
+//        boolean senhasCoincidem = passwordEncoder.matches(user.getPassword(), userDetails.getPassword());
+//        if (senhasCoincidem){
+//            return userDetails;
+//        }
+//
+//        try {
+//            throw new SenhaInvalidaException("Senha inválida");
+//        } catch (SenhaInvalidaException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//       User user = userRepository.findByEmail(email)
+//               .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail informado"));
+//       return (UserDetails) User.builder()
+//               .email(user.getEmail())
+//               .password(user.getPassword())
+//               .build();
+//    }
+
+//    public void validarEmail(String email) throws EmailEmUsoException {
+//        boolean emailEmUso = userRepository.findByEmail(email).isPresent();
+//        if (emailEmUso){
+//            throw new EmailEmUsoException("E-mail já está em uso: " + email);
+//        }
+//    }
 }

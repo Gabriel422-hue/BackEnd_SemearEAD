@@ -1,0 +1,36 @@
+package com.api.semear.Api.Semear.domain.course.model;
+
+import com.api.semear.Api.Semear.domain.user.model.User;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+
+@Entity
+@Table(name = "tb_courses")
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@Getter
+@Setter
+
+public class Course {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
+
+    @NotBlank(message = "A decrição não pode ficar em branco")
+    private String description;
+
+
+    @NotBlank(message = "O preço não pode ficar em branco")
+    private double price;
+
+
+
+
+}
