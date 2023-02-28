@@ -1,6 +1,7 @@
 package com.api.semear.Api.Semear.domain.course.model;
 
 import com.api.semear.Api.Semear.domain.user.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -12,7 +13,6 @@ import lombok.*;
 @EqualsAndHashCode
 @Getter
 @Setter
-
 public class Course {
 
     @Id
@@ -21,6 +21,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
     @NotBlank(message = "A decrição não pode ficar em branco")
