@@ -1,6 +1,7 @@
 package com.api.semear.Api.Semear.domain.course.service;
 
 
+import com.api.semear.Api.Semear.core.exception.ObjectNotFoundException;
 import com.api.semear.Api.Semear.domain.course.model.Course;
 import com.api.semear.Api.Semear.domain.course.repository.CourseRepository;
 import com.api.semear.Api.Semear.domain.user.model.User;
@@ -26,7 +27,7 @@ public class CourseService {
 
     public Course findById(Long id){
         Optional<Course> course = this.courseRepository.findById(id);
-        return course.orElseThrow(() -> new RuntimeException("Curso não encontrado!" + ", tipo" + Course.class.getName()));
+        return course.orElseThrow(() -> new ObjectNotFoundException("Curso não encontrado!" + ", tipo" + Course.class.getName()));
     }
 
     public List<Course> findAllByUserId(Long userid){
