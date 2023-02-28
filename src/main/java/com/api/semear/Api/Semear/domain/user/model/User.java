@@ -1,7 +1,9 @@
 package com.api.semear.Api.Semear.domain.user.model;
 
 import com.api.semear.Api.Semear.domain.course.model.Course;
+import com.api.semear.Api.Semear.domain.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +11,10 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -67,6 +72,19 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Course> courses = new ArrayList<Course>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @CollectionTable(name = "Tb_user_profile")
+    private Set<Integer> profile = new HashSet<>();
+
+    public Set<Profile> getProfile() {
+        return this.profile.stream().map(e -> Profile.toEnum(e)).collect(Collectors.toSet());
+    }
+
+    public void addProfile(Profile profile){
+        this.profile.add(profile.getCod());
+    }
 
 
 }

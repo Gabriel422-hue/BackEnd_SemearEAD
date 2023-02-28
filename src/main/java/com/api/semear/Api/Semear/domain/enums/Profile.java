@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 public enum Profile {
 
     ADMIN(1, "ROLE_ADMIN"),
-    CUSTOMER(2, "ROLE_CUSTOMER"),
+    USER(2, "ROLE_USER"),
     TEACHER(3, "ROLE_TEACHER");
 
     private int cod;
