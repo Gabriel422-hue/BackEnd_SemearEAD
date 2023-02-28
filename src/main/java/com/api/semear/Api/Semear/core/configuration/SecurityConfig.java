@@ -11,12 +11,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-
+@EnableWebMvc
 public class SecurityConfig {
 
     private static String[] PUBLIC_MATCHERS = {
@@ -31,11 +32,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests()
+        http.authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                         .requestMatchers(PUBLIC_MATCHERS).permitAll()
-                        .anyRequest().authenticated();
-
+                        .anyRequest().authenticated()
+        );
         http.cors().and().csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

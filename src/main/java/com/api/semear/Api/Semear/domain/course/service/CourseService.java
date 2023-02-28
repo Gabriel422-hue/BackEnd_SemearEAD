@@ -31,8 +31,7 @@ public class CourseService {
     }
 
     public List<Course> findAllByUserId(Long userid){
-       List<Course> courses = this.courseRepository.findbyUser_Id(userid);
-       return courses;
+        return this.courseRepository.findByUser_Id(userid);
     }
 
     @Transactional

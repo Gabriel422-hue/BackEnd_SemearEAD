@@ -14,11 +14,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-
+        this.bCryptPasswordEncoder = passwordEncoder;
     }
 
     public User findById(Long id) {

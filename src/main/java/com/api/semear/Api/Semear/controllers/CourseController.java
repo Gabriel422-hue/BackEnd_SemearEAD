@@ -32,8 +32,8 @@ public class CourseController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Course>> findAllCoursesById (@PathVariable Long userId){
-        List<Course> courses = this.courseService.findAllByUserId(userId);
-        return ResponseEntity.ok().body(courses);
+        List<Course> course = this.courseService.findAllByUserId(userId);
+        return ResponseEntity.ok().body(course);
 
     }
 
