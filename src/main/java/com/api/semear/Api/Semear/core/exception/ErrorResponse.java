@@ -20,6 +20,11 @@ public class ErrorResponse {
     private String stackTrace;
     private List<ValidationError> erros;
 
+    public String toJson() {
+        return "{\"status\": " + getStatus() + ", " +
+                "\"message\": \"" + getMessage() + "\"}";
+    }
+
     @Getter
     @Setter
     @RequiredArgsConstructor

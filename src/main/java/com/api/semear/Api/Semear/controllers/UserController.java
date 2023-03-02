@@ -3,6 +3,8 @@ package com.api.semear.Api.Semear.controllers;
 import com.api.semear.Api.Semear.domain.user.model.User;
 import com.api.semear.Api.Semear.domain.user.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,19 +14,14 @@ import java.net.URI;
 
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping("/user")
 @Validated
 public class UserController {
+    @Autowired
+    private UserService userService;
 
-    private final UserService userService;
 
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-
-    }
-
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id){
         User user = this.userService.findById(id);
         return ResponseEntity.ok().body(user);

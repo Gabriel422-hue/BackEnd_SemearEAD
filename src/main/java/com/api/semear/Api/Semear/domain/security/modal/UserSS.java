@@ -1,6 +1,7 @@
 package com.api.semear.Api.Semear.domain.security.modal;
 
 import com.api.semear.Api.Semear.domain.enums.Profile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,11 +12,13 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class UserSS  implements UserDetails {
 
     private Long id;
+
     private String email;
     private String password;
 
@@ -30,8 +33,18 @@ public class UserSS  implements UserDetails {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override

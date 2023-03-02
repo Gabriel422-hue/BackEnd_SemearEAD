@@ -5,7 +5,11 @@ import com.api.semear.Api.Semear.core.exception.ObjectNotFoundException;
 import com.api.semear.Api.Semear.domain.course.model.Course;
 import com.api.semear.Api.Semear.domain.course.repository.CourseRepository;
 import com.api.semear.Api.Semear.domain.user.model.User;
-import com.api.semear.Api.Semear.domain.user.service.UserService;
+import com.api.semear.Api.Semear.domain.user.repository.UserRepository;
+
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,17 +17,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CourseService {
 
 
     private final CourseRepository courseRepository;
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public CourseService(CourseRepository courseRepository, UserService userService) {
-        this.courseRepository = courseRepository;
-        this.userService = userService;
-    }
 
     public Course findById(Long id){
         Optional<Course> course = this.courseRepository.findById(id);
@@ -36,7 +37,8 @@ public class CourseService {
 
     @Transactional
     public Course create(Course course){
-        User user = this.userService.findById(course.getUser().getId());
+        Long userId = course.getUser().getId();
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
         course.setId(null);
         course.setUser(user);
         course = this.courseRepository.save(course);

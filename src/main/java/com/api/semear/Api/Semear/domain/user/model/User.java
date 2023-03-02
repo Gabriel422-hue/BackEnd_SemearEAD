@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Builder
 @Entity
 @Table(name = "tb_users")
 public class User {
@@ -51,7 +50,7 @@ public class User {
 
     @NotBlank(groups = UptadeUser.class, message = "Senha não pode estar em branco")
     @Size(min = 8, message = "Senha deve ter pelo menos 8 caracteres")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotBlank(message = "Endereço não pode estar em branco")
@@ -79,7 +78,7 @@ public class User {
     private Set<Integer> profile = new HashSet<>();
 
     public Set<Profile> getProfile() {
-        return this.profile.stream().map(e -> Profile.toEnum(e)).collect(Collectors.toSet());
+        return this.profile.stream().map(Profile::toEnum).collect(Collectors.toSet());
     }
 
     public void addProfile(Profile profile){

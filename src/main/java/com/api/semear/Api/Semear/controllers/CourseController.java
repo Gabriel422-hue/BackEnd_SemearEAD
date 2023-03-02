@@ -4,6 +4,7 @@ package com.api.semear.Api.Semear.controllers;
 import com.api.semear.Api.Semear.domain.course.model.Course;
 import com.api.semear.Api.Semear.domain.course.service.CourseService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/courses")
+@AllArgsConstructor
+@Validated
 public class CourseController {
 
-
     private final CourseService courseService;
-
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
-    }
 
 
     @GetMapping("/{id}")
@@ -36,7 +34,6 @@ public class CourseController {
         return ResponseEntity.ok().body(course);
 
     }
-
 
 
     @PostMapping
@@ -55,9 +52,5 @@ public class CourseController {
         this.courseService.uptade(course);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
     
 }
