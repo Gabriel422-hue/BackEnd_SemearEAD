@@ -4,6 +4,7 @@ import com.api.semear.Api.Semear.domain.user.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -28,7 +29,7 @@ public class Course {
     private String description;
 
 
-    @NotBlank(message = "O preço não pode ficar em branco")
+    @NotNull(message = "O preço não pode ficar em branco")
     private double price;
 
 
