@@ -1,6 +1,7 @@
 package com.api.semear.Api.Semear.core.configuration;
 
 import com.api.semear.Api.Semear.domain.security.JWTAuthenticationFilter;
+import com.api.semear.Api.Semear.domain.security.JWTAuthorizationFilter;
 import com.api.semear.Api.Semear.domain.security.JWTUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,7 @@ public class SecurityConfig {
                         .authenticationManager(authenticationManager)
             );
         http.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(this.authenticationManager, this.jwtUtil, this.userDetailsService));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();
