@@ -45,7 +45,8 @@ public class SecurityConfig {
 
 
     private static final String[] PUBLIC_MATCHERS = {
-            "/"
+            "/",
+            "/swagger-ui.html"
     };
     private static final String[] PUBLIC_MATCHERS_POST = {
             "/user",
