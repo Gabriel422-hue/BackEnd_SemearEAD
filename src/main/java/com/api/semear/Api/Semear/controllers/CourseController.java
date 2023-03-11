@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,7 @@ public class CourseController {
 
     @PostMapping
     @Validated
-    public ResponseEntity<Void> create (@Valid @RequestBody Course course){
+    public ResponseEntity<Void> create (@Valid @RequestBody Course course) throws AccessDeniedException {
         this.courseService.create(course);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(course.getId()).toUri();
@@ -52,5 +53,5 @@ public class CourseController {
         this.courseService.uptade(course);
         return ResponseEntity.noContent().build();
     }
-    
+
 }
