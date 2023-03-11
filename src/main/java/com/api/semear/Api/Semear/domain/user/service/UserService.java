@@ -43,7 +43,7 @@ public class UserService {
         user.setLastname(user.getLastname());
         user.setEmail(user.getEmail());
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setProfile(Stream.of(Profile.USER.getCod()).collect(Collectors.toSet()));
+        user.setProfile(Stream.of(Profile.TEACHER.getCod()).collect(Collectors.toSet()));
         user.setAddress(user.getAddress());
         user.setCity(user.getCity());
         user.setState(user.getState());

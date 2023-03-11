@@ -33,6 +33,7 @@ public class Course {
     private double price;
 
 
-
+    @NotNull(message = "O nome do curso é obrigatório")
+    private String name;
 
 }

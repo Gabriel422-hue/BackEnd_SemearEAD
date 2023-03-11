@@ -2,11 +2,13 @@ package com.api.semear.Api.Semear.domain.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Date;
 import java.util.Objects;
 @Component
@@ -22,23 +24,19 @@ public class JWTUtil {
 
 
     public String generateToken(String username) {
-        SecretKey key = getKeyBySecret();
-        return Jwts.builder()
+        return Jwts
+                .builder()
                 .setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + this.expiration))
-                .signWith(key)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    private SecretKey getKeyBySecret() {
-        SecretKey key = Keys.hmacShaKeyFor(this.secret.getBytes());
-        return key;
     }
 
     public String getUsername (String token){
         Claims claims = getClaims(token);
-            if (Objects.nonNull(claims))
-                return claims.getSubject();
+        if (Objects.nonNull(claims))
+            return claims.getSubject();
         return null;
     }
 
@@ -56,10 +54,20 @@ public class JWTUtil {
 
     private Claims getClaims(String token) {
         try {
-            return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
         }
         catch (Exception e) {
             return null;
         }
+    }
+
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
