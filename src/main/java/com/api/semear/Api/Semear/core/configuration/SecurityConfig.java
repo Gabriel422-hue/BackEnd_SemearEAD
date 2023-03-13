@@ -45,11 +45,13 @@ public class SecurityConfig {
     private static final String[] PUBLIC_MATCHERS = {
             "/",
             "/swagger-ui.html",
-            "/h2-console/**"
+            "/h2-console/**",
+            "/cart"
     };
     private static final String[] PUBLIC_MATCHERS_POST = {
-            "/user",
-            "/login"
+            "/users",
+            "/login",
+            "/cart/**"
     };
 
     @Bean
