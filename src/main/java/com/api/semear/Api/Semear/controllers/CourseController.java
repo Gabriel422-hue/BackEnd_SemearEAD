@@ -29,11 +29,10 @@ public class CourseController {
         return ResponseEntity.ok(course);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Course>> findAllCoursesById (@PathVariable Long userId){
-        List<Course> course = this.courseService.findAllByUserId(userId);
+    @GetMapping("/user")
+    public ResponseEntity<List<Course>> findAllByUser(){
+        List<Course> course = this.courseService.findAllByUser();
         return ResponseEntity.ok().body(course);
-
     }
 
 

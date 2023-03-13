@@ -1,6 +1,0 @@
-2023-03-11 11:56:06 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TB_USERS" not found (this database is empty); SQL statement:
-insert into tb_users (id, cep, address, church, city, email, lastname, name, password, state) values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42104-214]
-2023-03-11 11:57:31 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TB_USERS" not found (this database is empty); SQL statement:
-insert into tb_users (id, cep, address, church, city, email, lastname, name, password, state) values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42104-214]
