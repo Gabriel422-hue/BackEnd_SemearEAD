@@ -46,7 +46,8 @@ public class SecurityConfig {
             "/",
             "/swagger-ui.html",
             "/h2-console/**",
-            "/cart"
+            "/cart",
+            "/confirmar-email/**"
     };
     private static final String[] PUBLIC_MATCHERS_POST = {
             "/users",

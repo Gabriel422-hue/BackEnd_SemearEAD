@@ -16,6 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -47,7 +50,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserSS userSS = (UserSS) authentication.getPrincipal();
         String username = userSS.getEmail();
         String token = this.jwtUtil.generateToken(username);
-        response.addHeader("Authorization","Bearer" + token);
+        response.addHeader("Authorization","Bearer " + token);
         response.addHeader("access-control-expose-headers", "Authorization");
     }
 
