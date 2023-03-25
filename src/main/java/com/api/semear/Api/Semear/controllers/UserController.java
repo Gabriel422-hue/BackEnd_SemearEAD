@@ -2,6 +2,7 @@ package com.api.semear.Api.Semear.controllers;
 
 import com.api.semear.Api.Semear.domain.user.model.User;
 import com.api.semear.Api.Semear.domain.user.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class UserController {
 
     @PostMapping
     @Validated(User.CreateUser.class)
-    public ResponseEntity<Void> create (@Valid @RequestBody User user){
+    public ResponseEntity<Void> create (@Valid @RequestBody User user) throws MessagingException {
         this.userService.create(user);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(user.getId()).toUri();

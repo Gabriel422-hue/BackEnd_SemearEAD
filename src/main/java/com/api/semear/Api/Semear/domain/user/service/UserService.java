@@ -3,10 +3,12 @@ package com.api.semear.Api.Semear.domain.user.service;
 
 import com.api.semear.Api.Semear.core.exception.AuthorizationException;
 import com.api.semear.Api.Semear.core.exception.ObjectNotFoundException;
+import com.api.semear.Api.Semear.domain.email.service.EmailService;
 import com.api.semear.Api.Semear.domain.enums.Profile;
 import com.api.semear.Api.Semear.domain.security.modal.UserSS;
 import com.api.semear.Api.Semear.domain.user.model.User;
 import com.api.semear.Api.Semear.domain.user.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,8 +28,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final EmailService emailService;
 
-    
+
     public User findById(Long id) {
         UserSS userSS = authenticated();
         if (!Objects.nonNull(userSS) || userSS.hasRole(Profile.ADMIN) && !id.equals(userSS.getId()))
@@ -36,8 +40,9 @@ public class UserService {
                 "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()));
     }
 
+
     @Transactional
-    public User create(User user) {
+    public User create(User user) throws MessagingException {
         user.setId(null);
         user.setName(user.getName());
         user.setLastname(user.getLastname());
@@ -49,7 +54,10 @@ public class UserService {
         user.setState(user.getState());
         user.setCEP(user.getCEP());
         user.setChurch(user.getChurch());
+        user.setCode(UUID.randomUUID().toString());
+        user.setConfirmed(false);
         user = this.userRepository.save(user);
+        emailService.enviarEmailConfirmacao(user.getEmail(), user.getCode());
         return user;
 
     }

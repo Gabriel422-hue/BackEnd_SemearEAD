@@ -2,7 +2,6 @@ package com.api.semear.Api.Semear.domain.user.model;
 
 import com.api.semear.Api.Semear.domain.course.model.Course;
 import com.api.semear.Api.Semear.domain.enums.Profile;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "tb_users")
 public class User {
+
 
     public interface CreateUser {
 
@@ -71,6 +71,11 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Course> courses = new ArrayList<Course>();
+    @Column(nullable = false)
+    private boolean confirmed;
+
+    @Column(name = "code")
+    private String code;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
