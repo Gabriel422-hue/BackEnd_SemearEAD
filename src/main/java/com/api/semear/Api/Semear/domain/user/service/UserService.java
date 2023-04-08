@@ -57,7 +57,7 @@ public class UserService {
         user.setCode(UUID.randomUUID().toString());
         user.setConfirmed(false);
         user = this.userRepository.save(user);
-        emailService.enviarEmailConfirmacao(user.getEmail(), user.getCode());
+//        emailService.enviarEmailConfirmacao(user.getEmail(), user.getCode());
         return user;
 
     }
@@ -77,4 +77,5 @@ public class UserService {
             return null;
         }
     }
+
 }
