@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class CourseService {
     private final UserService userService;
 
 
-    public Course findById(Long id) {
+    public Course findById(UUID id) {
         Course course = this.courseRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(
                 "Curso não encontrado!" + ", tipo" + Course.class.getName()));
         UserSS userSS = UserService.authenticated();
@@ -64,6 +65,7 @@ public class CourseService {
         courseToSave.setUser(user);
         courseToSave.setName(course.getName());
         courseToSave.setDescription(course.getDescription());
+        courseToSave.setTeacher(course.getTeacher());
         courseToSave.setPrice(course.getPrice());
         return this.courseRepository.save(courseToSave);
     }
@@ -73,6 +75,7 @@ public class CourseService {
         Course newCourse = findById(course.getId());
         newCourse.setDescription(course.getDescription());
         newCourse.setPrice(course.getPrice());
+        newCourse.setTeacher(course.getTeacher());
         return this.courseRepository.save(newCourse);
     }
 

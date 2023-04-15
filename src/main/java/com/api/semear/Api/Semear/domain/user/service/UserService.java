@@ -10,6 +10,7 @@ import com.api.semear.Api.Semear.domain.user.model.User;
 import com.api.semear.Api.Semear.domain.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class UserService {
     private final EmailService emailService;
 
 
-    public User findById(Long id) {
+    public User findById(UUID id) {
         UserSS userSS = authenticated();
         if (!Objects.nonNull(userSS) || userSS.hasRole(Profile.ADMIN) && !id.equals(userSS.getId()))
             throw new AuthorizationException("Acesso Negado!");
@@ -48,7 +49,7 @@ public class UserService {
         user.setLastname(user.getLastname());
         user.setEmail(user.getEmail());
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setProfile(Stream.of(Profile.TEACHER.getCod()).collect(Collectors.toSet()));
+        user.setProfile(Stream.of(Profile.USER.getCod()).collect(Collectors.toSet()));
         user.setAddress(user.getAddress());
         user.setCity(user.getCity());
         user.setState(user.getState());
@@ -69,6 +70,22 @@ public class UserService {
         newPassword.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         return this.userRepository.save(newPassword);
     }
+
+    @Transactional
+    public User updateToTeacher(String email) {
+        User user = userRepository.findByEmail(email);
+        UserSS userSS = authenticated();
+        if (!userSS.hasRole(Profile.ADMIN)) {
+            throw new AuthorizationServiceException("Acesso negado! Você não é um administrador!");
+        }
+        if (user != null) {
+            user.setProfile(Stream.of(Profile.TEACHER.getCod()).collect(Collectors.toSet()));
+            return userRepository.save(user);
+        }
+        return null;
+    }
+
+
 
     public static UserSS authenticated(){
         try {
