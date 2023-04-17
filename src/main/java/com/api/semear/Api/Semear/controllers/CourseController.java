@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
@@ -24,7 +25,7 @@ public class CourseController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> findById(@PathVariable Long id){
+    public ResponseEntity<Course> findById(@PathVariable UUID id){
         Course course = this.courseService.findById(id);
         return ResponseEntity.ok(course);
     }
@@ -47,7 +48,7 @@ public class CourseController {
 
     @PutMapping("/{id}")
     @Validated
-    public ResponseEntity<Void> update (@Valid @RequestBody Course course, @PathVariable Long id ){
+    public ResponseEntity<Void> update (@Valid @RequestBody Course course, @PathVariable UUID id ){
         course.setId(id);
         this.courseService.uptade(course);
         return ResponseEntity.noContent().build();

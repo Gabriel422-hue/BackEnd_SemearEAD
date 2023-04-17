@@ -1,12 +1,10 @@
 package com.api.semear.Api.Semear.controllers;
 
-import com.api.semear.Api.Semear.domain.security.modal.UserSS;
 import com.api.semear.Api.Semear.domain.user.model.User;
 import com.api.semear.Api.Semear.domain.user.repository.UserRepository;
 import com.api.semear.Api.Semear.domain.user.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 @RestController
@@ -35,13 +34,13 @@ public class UserController {
     public ResponseEntity<Map<String, String>> getAuthenticatedUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            // Usuário não autenticado
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         String authenticatedUserEmail = authentication.getName();
         User user = userRepository.findByEmail(authenticatedUserEmail);
         if (user == null) {
-            // Não foi possível encontrar o usuário pelo email
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         String authenticatedUserName = user.getName();
@@ -51,16 +50,15 @@ public class UserController {
     }
 
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id){
+    public ResponseEntity<User> findById(@PathVariable UUID id) {
         User user = this.userService.findById(id);
         return ResponseEntity.ok().body(user);
     }
 
     @PostMapping
     @Validated(User.CreateUser.class)
-    public ResponseEntity<Void> create (@Valid @RequestBody User user) throws MessagingException {
+    public ResponseEntity<Void> create(@Valid @RequestBody User user) throws MessagingException {
         this.userService.create(user);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(user.getId()).toUri();
@@ -70,12 +68,21 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Validated(User.UptadeUser.class)
-    public ResponseEntity<Void> update (@Valid @RequestBody User user, @PathVariable Long id){
+    public ResponseEntity<Void> update(@Valid @RequestBody User user, @PathVariable UUID id) {
         user.setId(id);
         this.userService.uptade(user);
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{email}/updateToTeacher")
+    public ResponseEntity<?> updateToTeacher(@PathVariable("email") String email) {
+        User updatedUser = userService.updateToTeacher(email);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
 

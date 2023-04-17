@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "tb_courses")
 @NoArgsConstructor
@@ -17,8 +19,8 @@ import lombok.*;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -35,5 +37,8 @@ public class Course {
 
     @NotNull(message = "O nome do curso é obrigatório")
     private String name;
+
+    @NotNull(message = "O nome do professor é obrigatório")
+    private String teacher;
 
 }
